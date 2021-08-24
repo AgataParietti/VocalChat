@@ -10,12 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <script>
-            window.addEventListener("load", function() {
-                alert('Page is loaded');
-            });
-        </script>
-            <nav class="navbar navbar-dark bg-dark">
+        <nav class="navbar navbar-dark bg-dark">
             <div id="nav-container">
                 <div id="container1"><a href="Map.html"><div class="btn-nav"><span>HOME PAGE</span></div></a></div>
                 <h1 id="title"> VOCAL CHAT </h1>
@@ -27,8 +22,16 @@
                 </div>
             </div>
         </nav>
-        <div class="Information">
+        <section class="main-controls">
+            <div id="buttons">
+                <button class="record">Record</button>
+                <button class="stop">Stop</button>
+            </div>
+        </section>
+        <section class="sound-clips">
 
-        </div>
+
+        </section>
+        <script rel="script" type="text/javascript" src="audio.js"></script>
     </body>
 </html>

@@ -10,7 +10,7 @@ function initMap() {
     });
     infoWindow = new google.maps.InfoWindow;
     map.setOptions({ styles: styles["hide"] })
-    // Try HTML5 geolocation.
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             var pos = {
@@ -19,7 +19,7 @@ function initMap() {
             };
 
             map.setCenter(pos);
-            //Put marker of the Geolocated user location
+
             var userMarker = new google.maps.Marker({
                 map: map,
                 position: pos
@@ -30,7 +30,6 @@ function initMap() {
                 infoWindow.open(map, this);
             });
 
-            //Put request in here there are 3 requests since nearbysearch only has one type to be specified
             var requestAirport = {
                 location: pos,
                 radius: '8000',
@@ -82,7 +81,6 @@ function initMap() {
                 type: ['art_gallery']
             };
 
-            //Make Places Service requests here
             service = new google.maps.places.PlacesService(map);
             service.nearbySearch(requestAirport, callback_nearby);
             service.nearbySearch(requestMuseum, callback_nearby);
@@ -127,7 +125,6 @@ function createMarker(place) {
         scaledSize: new google.maps.Size(40, 40),
     };
 
-//put marker of the places in the map
     var marker = new google.maps.Marker({
         map: map,
         icon: icon,
@@ -135,9 +132,8 @@ function createMarker(place) {
     });
 
     google.maps.event.addListener(marker, 'click', function() {
-        infoWindow.setContent(place.name);
-        infoWindow.open(map, this);
-        window.location.href = 'https://angiologiandonati.altervista.org/Audios.html'
+        sessionStorage.setItem("placeId", place.place_id);
+        window.location.href = 'http://localhost:63342/VocalChat/Audios.html'
     });
 }
 
@@ -157,16 +153,20 @@ const styles = {
 };
 
 
-function getInfo(place_id) {
-    var service = new google.maps.places.PlacesService(map);
+function getInfo() {
+    place_id = sessionStorage.getItem("placeId");
+    console.log(place_id)
+    var request = {
+        placeId: place_id,
+        fields: ['name', 'rating', 'formatted_phone_number', 'geometry']
+    };
 
-    service.getDetails({
-        placeId: place_id
-    }, function(place, status) {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-            if(place) {
-                console.log("place", place);
-            }
-        }
-    });
+    service = new google.maps.places.PlacesService(map);
+    service.getDetails(request, callback);
+}
+
+function callback(place, status) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+        console.log(place)
+    }
 }
