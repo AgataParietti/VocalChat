@@ -80,6 +80,11 @@ function initMap() {
                 radius: '8000',
                 type: ['art_gallery']
             };
+            var requestPark = {
+                location: pos,
+                radius: '8000',
+                type: ['park']
+            };
 
             service = new google.maps.places.PlacesService(map);
             service.nearbySearch(requestAirport, callback_nearby);
@@ -92,6 +97,7 @@ function initMap() {
             service.nearbySearch(requestLibrary, callback_nearby);
             service.nearbySearch(requestAquarium, callback_nearby);
             service.nearbySearch(requestArtGallery, callback_nearby);
+            service.nearbySearch(requestPark, callback_nearby);
 
 
         }, function() {
@@ -133,7 +139,7 @@ function createMarker(place) {
 
     google.maps.event.addListener(marker, 'click', function() {
         sessionStorage.setItem("placeId", place.place_id);
-        window.location.href = 'http://localhost:63342/VocalChat/Audios.html'
+        window.location.href = 'http://localhost:63342/VocalChat/Audios.html?_ijt=24085lps71t7u3d8iep85ohkaf'
     });
 }
 
@@ -169,4 +175,8 @@ function callback(place, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
         console.log(place)
     }
+}
+
+function getPlaceId() {
+    return {"pl_id": place.place_id };
 }

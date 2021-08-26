@@ -1,11 +1,11 @@
 const record = document.querySelector('.record');
 const stop = document.querySelector('.stop');
 const soundClips = document.querySelector('.sound-clips');
-const mainSection = document.querySelector('.main-controls');
 
 stop.disabled = true;
 
 if (navigator.mediaDevices.getUserMedia) {
+
     console.log('getUserMedia supported.');
 
     const constraints = { audio: true };
@@ -29,15 +29,12 @@ if (navigator.mediaDevices.getUserMedia) {
             console.log("recorder stopped");
             record.style.background = "";
             record.style.color = "";
-            // mediaRecorder.requestData();
-
             stop.disabled = true;
             record.disabled = false;
         }
 
         mediaRecorder.onstop = function(e) {
-            console.log("data available after MediaRecorder.stop() called.");
-
+            console.log("data available");
             const clipContainer = document.createElement('article');
             const clipLabel = document.createElement('p');
             const audio = document.createElement('audio');
@@ -54,22 +51,19 @@ if (navigator.mediaDevices.getUserMedia) {
             soundClips.appendChild(clipContainer);
 
             audio.controls = true;
-            const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+            const blob = new Blob(chunks, { 'type' : 'audio/mp3;base64 codecs=opus' });
             chunks = [];
             const audioURL = window.URL.createObjectURL(blob);
             audio.src = audioURL;
             console.log("recorder stopped");
 
 
-            clipLabel.onclick = function() {
-                const existingName = clipLabel.textContent;
-                const newClipName = prompt('Enter a new name for your sound clip?');
-                if(newClipName === null) {
-                    clipLabel.textContent = existingName;
-                } else {
-                    clipLabel.textContent = newClipName;
-                }
+            var defaults = {
+                serverURL: "server/actions.php",
             }
+
+            options = $.extend(defaults, options);
+            sendAudio(audio)
         }
 
         mediaRecorder.ondataavailable = function(e) {
@@ -87,3 +81,26 @@ if (navigator.mediaDevices.getUserMedia) {
     console.log('getUserMedia not supported on your browser!');
 }
 
+function sendAudio(aud) {
+    request_type = "save";
+
+    var request = $.ajax({
+        url: options.serverURL,
+        type: "POST",
+        data: {
+            "action": request_type,
+            "pl_id": getPlaceId(),
+            "aud": aud
+        },
+        dataType: "json",
+    });
+
+    request.done(function (data) {
+        console.log('audio inviato')
+    });
+
+    request.fail(
+        function (jqXHR, textStatus) {
+            alert("Request failed: " + textStatus);
+        });
+}
