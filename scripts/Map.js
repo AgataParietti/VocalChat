@@ -1,4 +1,5 @@
-var map, infoWindow, service;
+var map, infoWindow, service, details;
+const rad = 200
 
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -32,22 +33,22 @@ function initMap() {
 
             var requestAirport = {
                 location: pos,
-                radius: '8000',
+                radius: rad,
                 type: ['airport']
             };
             var requestMuseum = {
                 location: pos,
-                radius: '8000',
+                radius: rad,
                 type: ['museum']
             };
             var requestChurch = {
                 location: pos,
-                radius: '8000',
+                radius: rad,
                 type: ['church']
             };
             var requestStadium = {
                 location: pos,
-                radius: '8000',
+                radius: rad,
                 type: ['stadium']
             };
             var requestTrainStation = {
@@ -57,32 +58,32 @@ function initMap() {
             };
             var requestUniversity = {
                 location: pos,
-                radius: '8000',
+                radius: rad,
                 type: ['university']
             };
             var requestZoo = {
                 location: pos,
-                radius: '8000',
+                radius: rad,
                 type: ['zoo']
             };
             var requestLibrary = {
                 location: pos,
-                radius: '8000',
+                radius: rad,
                 type: ['library']
             };
             var requestAquarium = {
                 location: pos,
-                radius: '8000',
+                radius: rad,
                 type: ['aquarium']
             };
             var requestArtGallery = {
                 location: pos,
-                radius: '8000',
+                radius: rad,
                 type: ['art_gallery']
             };
             var requestPark = {
                 location: pos,
-                radius: '8000',
+                radius: rad,
                 type: ['park']
             };
 
@@ -139,7 +140,16 @@ function createMarker(place) {
 
     google.maps.event.addListener(marker, 'click', function() {
         sessionStorage.setItem("placeId", place.place_id);
-        window.location.href = 'http://localhost:63342/VocalChat/Audios.html?_ijt=24085lps71t7u3d8iep85ohkaf'
+        window.location.href = 'http://localhost:63342/audio2.js/Audios.html?_ijt=eoo2ribgn1buuv3fvt2lfu03vu&_ij_reload=RELOAD_ON_SAVE';
+        getInfo().then(success, failure);
+
+        function success() {
+            console.log('Informazioni ottenute')
+        }
+
+        function failure() {
+            console.log('Informazioni non ottenute')
+        }
     });
 }
 
@@ -158,25 +168,20 @@ const styles = {
     ],
 };
 
-
-function getInfo() {
+async function getInfo() {
     place_id = sessionStorage.getItem("placeId");
     console.log(place_id)
-    var request = {
+    var req = {
         placeId: place_id,
-        fields: ['name', 'rating', 'formatted_phone_number', 'geometry']
     };
-
     service = new google.maps.places.PlacesService(map);
-    service.getDetails(request, callback);
+    service.getDetails(req, callbackInfo);
 }
 
-function callback(place, status) {
+
+function callbackInfo(place, status) {
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-        console.log(place)
+        const logElem = document.querySelector("#info");
+        logElem.innerHTML = JSON.stringify(place);
     }
-}
-
-function getPlaceId() {
-    return {"pl_id": place.place_id };
 }
