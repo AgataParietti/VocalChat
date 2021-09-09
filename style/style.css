@@ -216,6 +216,10 @@ audio {
     clear: both;
 }
 
+#recordingsList, li {
+    list-style-type: none;
+}
+
 /*START RESPONSIVE*/
 
 @media screen and (max-height: 450px) {
